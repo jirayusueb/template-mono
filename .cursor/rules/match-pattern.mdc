@@ -1,0 +1,399 @@
+---
+description: Pattern matching utility for functional programming and type-safe conditional logic
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: true
+---
+
+# Pattern Matching Utility
+
+This project uses a custom pattern matching utility inspired by functional programming languages like Rust and F#. The `match` function provides type-safe, composable pattern matching for conditional logic.
+
+## Core Concepts
+
+### Match Function
+
+The `match` function creates a pattern matcher for any input value:
+
+```typescript
+import { match } from "@/utils/match";
+
+const result = match(inputValue)
+  .with(pattern1, handler1)
+  .with(pattern2, handler2)
+  .default(defaultHandler);
+```
+
+### Pattern Types
+
+#### Value Patterns
+
+Match exact values:
+
+```typescript
+const status = "loading";
+
+const message = match(status)
+  .with("loading", () => "Please wait...")
+  .with("success", () => "Operation completed")
+  .with("error", () => "Something went wrong")
+  .default(() => "Unknown status");
+```
+
+#### Predicate Patterns
+
+Use functions for complex conditions:
+
+```typescript
+const score = 85;
+
+const grade = match(score)
+  .with(
+    (s) => s >= 90,
+    () => "A"
+  )
+  .with(
+    (s) => s >= 80,
+    () => "B"
+  )
+  .with(
+    (s) => s >= 70,
+    () => "C"
+  )
+  .with(
+    (s) => s >= 60,
+    () => "D"
+  )
+  .default(() => "F");
+```
+
+#### Type Patterns
+
+Match different types:
+
+```typescript
+const processValue = (value: string | number | boolean) => {
+  return match(value)
+    .with(
+      (v): v is string => typeof v === "string",
+      (v) => v.toUpperCase()
+    )
+    .with(
+      (v): v is number => typeof v === "number",
+      (v) => v * 2
+    )
+    .with(
+      (v): v is boolean => typeof v === "boolean",
+      (v) => (v ? "Yes" : "No")
+    )
+    .default(() => "Unknown type");
+};
+```
+
+## Advanced Usage
+
+### Chaining Patterns
+
+Patterns are evaluated in order, and the first match is used:
+
+```typescript
+const processUser = (user: User) => {
+  return match(user)
+    .with(
+      (u) => u.role === "admin",
+      (u) => `Admin: ${u.name}`
+    )
+    .with(
+      (u) => u.role === "user",
+      (u) => `User: ${u.name}`
+    )
+    .with(
+      (u) => u.isActive,
+      (u) => `Active: ${u.name}`
+    )
+    .default((u) => `Inactive: ${u.name}`);
+};
+```
+
+### Complex Object Matching
+
+```typescript
+interface ApiResponse {
+  status: "success" | "error";
+  data?: unknown;
+  error?: string;
+}
+
+const handleApiResponse = (response: ApiResponse) => {
+  return match(response)
+    .with(
+      (r) => r.status === "success" && r.data !== undefined,
+      (r) => `Success: ${JSON.stringify(r.data)}`
+    )
+    .with(
+      (r) => r.status === "error" && r.error !== undefined,
+      (r) => `Error: ${r.error}`
+    )
+    .default(() => "Unknown response format");
+};
+```
+
+### Result Pattern Integration
+
+Combine with Result pattern for robust error handling:
+
+```typescript
+import { match } from "@/utils/match";
+import { ok, err, Result } from "@/utils/result";
+
+const processResult = <T, E>(result: Result<T, E>) => {
+  return match(result)
+    .with(
+      (r) => r.success === true,
+      (r) => `Success: ${JSON.stringify(r.data)}`
+    )
+    .with(
+      (r) => r.success === false,
+      (r) => `Error: ${r.error}`
+    )
+    .default(() => "Unknown result format");
+};
+```
+
+## When Helper
+
+The `when` helper provides boolean pattern matching:
+
+```typescript
+import { when } from "@/utils/match";
+
+const message = when(isLoading)
+  .with(true, () => "Loading...")
+  .with(false, () => "Ready")
+  .default(() => "Unknown state");
+```
+
+## Best Practices
+
+### 1. Use Descriptive Patterns
+
+```typescript
+// ✅ Good: Clear, descriptive patterns
+const getStatusMessage = (status: string) => {
+  return match(status)
+    .with("pending", () => "Request is being processed")
+    .with("approved", () => "Request has been approved")
+    .with("rejected", () => "Request has been rejected")
+    .default(() => "Unknown status");
+};
+
+// ❌ Bad: Unclear patterns
+const getStatusMessage = (status: string) => {
+  return match(status)
+    .with("p", () => "Processing")
+    .with("a", () => "Approved")
+    .with("r", () => "Rejected")
+    .default(() => "Unknown");
+};
+```
+
+### 2. Extract Complex Logic
+
+```typescript
+// ✅ Good: Extract complex patterns
+const isHighPriority = (task: Task) =>
+  task.priority === "high" || task.isUrgent;
+
+const processTask = (task: Task) => {
+  return match(task)
+    .with(isHighPriority, (t) => `High priority: ${t.title}`)
+    .with(
+      (t) => t.priority === "medium",
+      (t) => `Medium: ${t.title}`
+    )
+    .with(
+      (t) => t.priority === "low",
+      (t) => `Low: ${t.title}`
+    )
+    .default((t) => `Unknown priority: ${t.title}`);
+};
+
+// ❌ Bad: Inline complex logic
+const processTask = (task: Task) => {
+  return match(task)
+    .with(
+      (t) => t.priority === "high" || t.isUrgent,
+      (t) => `High priority: ${t.title}`
+    )
+    .with(
+      (t) => t.priority === "medium",
+      (t) => `Medium: ${t.title}`
+    )
+    .with(
+      (t) => t.priority === "low",
+      (t) => `Low: ${t.title}`
+    )
+    .default((t) => `Unknown priority: ${t.title}`);
+};
+```
+
+### 3. Always Provide Default Cases
+
+```typescript
+// ✅ Good: Always handle default case
+const getErrorMessage = (error: Error) => {
+  return match(error.constructor.name)
+    .with("ValidationError", () => "Please check your input")
+    .with("NetworkError", () => "Connection failed")
+    .with("AuthError", () => "Authentication required")
+    .default(() => "An unexpected error occurred");
+};
+
+// ❌ Bad: Missing default case (will throw)
+const getErrorMessage = (error: Error) => {
+  return match(error.constructor.name)
+    .with("ValidationError", () => "Please check your input")
+    .with("NetworkError", () => "Connection failed")
+    .with("AuthError", () => "Authentication required");
+};
+```
+
+### 4. Use Type Guards for Type Safety
+
+```typescript
+// ✅ Good: Use type guards
+const processValue = (value: unknown) => {
+  return match(value)
+    .with(
+      (v): v is string => typeof v === "string",
+      (v) => v.length
+    )
+    .with(
+      (v): v is number => typeof v === "number",
+      (v) => v * 2
+    )
+    .with(
+      (v): v is boolean => typeof v === "boolean",
+      (v) => (v ? 1 : 0)
+    )
+    .default(() => 0);
+};
+
+// ❌ Bad: No type safety
+const processValue = (value: unknown) => {
+  return match(value)
+    .with("string", (v) => (v as string).length)
+    .with("number", (v) => (v as number) * 2)
+    .with("boolean", (v) => ((v as boolean) ? 1 : 0))
+    .default(() => 0);
+};
+```
+
+### 5. Combine with Early Returns
+
+```typescript
+// ✅ Good: Combine with early returns
+const processUser = (user: User | null) => {
+  if (!user) {
+    return "No user provided";
+  }
+
+  return match(user.status)
+    .with("active", () => `Welcome back, ${user.name}`)
+    .with("inactive", () => "Account is inactive")
+    .with("banned", () => "Account has been banned")
+    .default(() => "Unknown account status");
+};
+
+// ❌ Bad: Nested conditions
+const processUser = (user: User | null) => {
+  return match(user)
+    .with(null, () => "No user provided")
+    .with(
+      (u) => u !== null && u.status === "active",
+      (u) => `Welcome back, ${u!.name}`
+    )
+    .with(
+      (u) => u !== null && u.status === "inactive",
+      () => "Account is inactive"
+    )
+    .with(
+      (u) => u !== null && u.status === "banned",
+      () => "Account has been banned"
+    )
+    .default(() => "Unknown account status");
+};
+```
+
+## Common Patterns
+
+### API Response Handling
+
+```typescript
+const handleApiResponse = <T>(response: ApiResponse<T>) => {
+  return match(response)
+    .with(
+      (r) => r.status === 200 && r.data !== undefined,
+      (r) => ok(r.data)
+    )
+    .with(
+      (r) => r.status >= 400 && r.status < 500,
+      (r) => err(new ClientError(r.message))
+    )
+    .with(
+      (r) => r.status >= 500,
+      (r) => err(new ServerError(r.message))
+    )
+    .default(() => err(new UnknownError("Unexpected response")));
+};
+```
+
+### State Machine
+
+```typescript
+type State = "idle" | "loading" | "success" | "error";
+
+const nextState = (currentState: State, action: string) => {
+  return match([currentState, action] as const)
+    .with(["idle", "start"], () => "loading" as const)
+    .with(["loading", "success"], () => "success" as const)
+    .with(["loading", "error"], () => "error" as const)
+    .with(["success", "reset"], () => "idle" as const)
+    .with(["error", "retry"], () => "loading" as const)
+    .default(() => currentState);
+};
+```
+
+### Validation
+
+```typescript
+const validateInput = (input: unknown) => {
+  return match(input)
+    .with(
+      (i): i is string => typeof i === "string" && i.length > 0,
+      (i) => ok(i.trim())
+    )
+    .with(
+      (i): i is number => typeof i === "number" && !isNaN(i),
+      (i) => ok(i.toString())
+    )
+    .default(() => err(new ValidationError("Invalid input type")));
+};
+```
+
+## Performance Considerations
+
+- Pattern matching is evaluated in order - put most common patterns first
+- Use simple value patterns when possible for better performance
+- Complex predicate functions are called for each pattern until a match is found
+- Consider extracting complex predicates to avoid recreation on each call
+
+## Integration with Project Patterns
+
+This pattern matching utility integrates seamlessly with:
+
+- **Result Pattern**: Handle success/error states with type safety
+- **Functional Programming**: Compose operations without side effects
+- **Type Safety**: Leverage TypeScript's type system for compile-time safety
+- **Error Handling**: Provide clear, explicit error handling paths
+
+Remember: Pattern matching should make code more readable and maintainable. If the pattern matching becomes too complex, consider refactoring into smaller, more focused functions.

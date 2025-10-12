@@ -1,0 +1,227 @@
+# nextjs-elysia-template Project Intelligence
+
+## Project Overview
+
+This is a modern full-stack TypeScript monorepo built with Better-T-Stack, designed as a foundation for web applications. The project uses a clean architecture pattern with separate frontend (Next.js) and backend (Elysia) applications.
+
+## Critical Implementation Paths
+
+### Authentication Flow
+
+1. User submits auth form (sign-in/sign-up)
+2. Frontend sends request to `/api/auth/*` endpoints
+3. Better-Auth processes authentication on server
+4. Session created and stored in SQLite database
+5. Secure cookie set for subsequent requests
+6. Protected routes check session validity
+
+### Database Operations
+
+- Use Drizzle ORM for all database operations
+- Schema-first approach: define schema in `apps/server/src/db/schema/`
+- Generate types with `bun db:generate`
+- Push changes with `bun db:push`
+- Use SQLite for development, scalable for production
+
+### Component Structure
+
+```typescript
+// Standard component pattern
+interface ComponentProps {
+  // Define all props with proper types
+}
+
+export function Component({ prop1, prop2 }: ComponentProps) {
+  // Component implementation
+  return <div>...</div>;
+}
+```
+
+### Server Architecture
+
+The server uses Elysia with a clean plugin-based architecture:
+
+```typescript
+// Main server setup with plugins
+const app = new Elysia()
+  .use(loggerIntegration)
+  .use(openapiIntegration)
+  .use(errorInterceptor)
+  .use(corsMiddleware)
+  .all("/api/auth/*", ({ request, set }) => {
+    if (["POST", "GET"].includes(request.method)) {
+      return auth.handler(request);
+    }
+    set.status = StatusCodes.METHOD_NOT_ALLOWED;
+    return { error: "Method not allowed" };
+  })
+  .use(routers)
+  .listen(Number.parseInt(process.env.PORT || "3001", 10));
+```
+
+### Router Pattern
+
+Routers follow a consistent pattern with proper error handling:
+
+```typescript
+// Health router example
+const healthRouter = new Elysia({ prefix: "/health" }).get("/", ({ set }) => {
+  const startTime = Date.now();
+  const responseTime = Date.now() - startTime;
+
+  set.status = StatusCodes.OK;
+
+  return Response.ok({
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: "1.0.0",
+    responseTime,
+    status: "healthy",
+  });
+});
+```
+
+## User Preferences and Workflow
+
+### Code Style
+
+- **TypeScript**: Use interfaces over types, strict mode enabled
+- **Error Handling**: Use Result pattern instead of try-catch blocks
+- **Functional Programming**: Prefer functions over classes
+- **Component Imports**: Use `@/components` alias for all component imports
+- **Package Manager**: Use `bun` for all package operations
+
+### Development Commands
+
+- `bun dev` - Start all apps in development
+- `bun dev:web` - Start only frontend
+- `bun dev:server` - Start only backend
+- `bun db:push` - Push database schema changes
+- `bun db:studio` - Open database studio
+
+### File Organization
+
+- Components in `apps/web/src/components/`
+- Pages in `apps/web/src/app/`
+- API routes in `apps/server/src/routers/`
+- Database schema in `apps/server/src/db/schema/`
+- Utilities in respective `lib/` directories
+
+## Project-Specific Patterns
+
+### Error Handling Pattern
+
+```typescript
+// Use Result pattern for error handling
+type Result<T, E = Error> =
+  | { success: true; data: T }
+  | { success: false; error: E };
+
+// Example usage
+function fetchUser(id: string): Result<User> {
+  try {
+    const user = await db.select().from(userTable).where(eq(userTable.id, id));
+    return { success: true, data: user[0] };
+  } catch (error) {
+    return { success: false, error: error as Error };
+  }
+}
+```
+
+### Component Import Pattern
+
+```typescript
+// Always use @/components alias
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Header } from "@/components/header";
+```
+
+### Database Query Pattern
+
+```typescript
+// Use Drizzle ORM with proper typing
+import { db } from "../db";
+import { user, session } from "../db/schema/auth";
+
+const users = await db.select().from(user).where(eq(user.email, email));
+```
+
+## Known Challenges
+
+### TypeScript Configuration
+
+- Web app has some type configuration issues in `tsconfig.json`
+- Ensure all components have proper TypeScript interfaces
+- Use strict type checking throughout
+
+### Authentication Integration
+
+- Better-Auth requires specific CORS configuration
+- Session cookies need proper security attributes
+- Database schema must match Better-Auth requirements
+
+### Database Schema
+
+- Schema changes require migration generation
+- Use `bun db:generate` before `bun db:push`
+- SQLite file is in `apps/server/local.db`
+
+## Evolution of Project Decisions
+
+### Technology Choices
+
+- **Bun**: Chosen for fast runtime and package management
+- **Elysia**: Selected for high-performance TypeScript backend
+- **Better-Auth**: Modern authentication with good TypeScript support
+- **Drizzle ORM**: Type-safe database operations
+- **shadcn/ui**: Consistent, accessible UI components
+
+### Architecture Decisions
+
+- **Monorepo**: Turborepo for build optimization
+- **Type Safety**: End-to-end TypeScript implementation
+- **Result Pattern**: Consistent error handling approach
+- **Functional Components**: React functional components with hooks
+
+## Tool Usage Patterns
+
+### Development Tools
+
+- **Biome**: Fast linting and formatting
+- **Ultracite**: Code quality enforcement
+- **Turborepo**: Build caching and parallel execution
+- **Drizzle Studio**: Database visualization
+
+### Memory Bank System
+
+- Comprehensive documentation in `memory-bank/` directory
+- Read all memory bank files at start of each session
+- Update documentation when patterns change
+- Maintain context across development sessions
+
+## Critical Rules
+
+### Must Follow
+
+1. Use Result pattern for error handling (no try-catch)
+2. Use `@/components` alias for all component imports
+3. Use `bun` package manager for all operations
+4. Maintain TypeScript strict mode compliance
+5. Follow Ultracite code quality standards
+
+### Must Avoid
+
+1. Don't use try-catch blocks for error handling
+2. Don't use relative imports for components
+3. Don't use npm or yarn (use bun)
+4. Don't ignore TypeScript errors
+5. Don't bypass code quality checks
+
+## Next Development Focus
+
+- Chat interface components and messaging system
+- LLM integration for AI-powered features
+- Real-time updates and WebSocket implementation
+- Advanced user features and settings
+

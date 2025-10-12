@@ -1,0 +1,986 @@
+---
+description: Code formatting practices for improved readability
+globs:
+alwaysApply: true
+---
+
+# Code Formatting Practices
+
+## Class Declaration Formatting
+
+### New Line After Class Declaration
+
+Always add a new line after the class declaration for better readability:
+
+```typescript
+// ✅ Good: New line after class declaration
+class UserService {
+  private database: Database;
+
+  constructor(database: Database) {
+    this.database = database;
+  }
+}
+
+// ❌ Bad: No new line after class declaration
+class UserService {
+  private database: Database;
+  constructor(database: Database) {
+    this.database = database;
+  }
+}
+```
+
+### Method Spacing
+
+Add blank lines between methods for better separation:
+
+```typescript
+// ✅ Good: Blank lines between methods
+class UserService {
+  private database: Database;
+
+  constructor(database: Database) {
+    this.database = database;
+  }
+
+  async createUser(data: CreateUserData): Promise<Result<User, Error>> {
+    // Implementation
+  }
+
+  async getUser(id: string): Promise<Result<User, Error>> {
+    // Implementation
+  }
+
+  async updateUser(
+    id: string,
+    data: UpdateUserData
+  ): Promise<Result<User, Error>> {
+    // Implementation
+  }
+}
+
+// ❌ Bad: No spacing between methods
+class UserService {
+  private database: Database;
+  constructor(database: Database) {
+    this.database = database;
+  }
+  async createUser(data: CreateUserData): Promise<Result<User, Error>> {
+    // Implementation
+  }
+  async getUser(id: string): Promise<Result<User, Error>> {
+    // Implementation
+  }
+}
+```
+
+## Return Statement Formatting
+
+### Return Statement Spacing
+
+Always add a blank line before return statements for better readability:
+
+```typescript
+// ✅ Good: Blank line before return
+function processUserData(user: User): Result<ProcessedUser, Error> {
+  const validationResult = validateUser(user);
+
+  if (validationResult.isErr()) {
+    return validationResult;
+  }
+
+  const processedUser = enrichUserData(validationResult.value);
+
+  return ok(processedUser);
+}
+
+// ❌ Bad: No spacing before return
+function processUserData(user: User): Result<ProcessedUser, Error> {
+  const validationResult = validateUser(user);
+  if (validationResult.isErr()) {
+    return validationResult;
+  }
+  const processedUser = enrichUserData(validationResult.value);
+  return ok(processedUser);
+}
+```
+
+### Early Return Pattern
+
+Use early returns with proper spacing for better flow:
+
+```typescript
+// ✅ Good: Early returns with proper spacing
+function validateUserInput(
+  input: UserInput
+): Result<ValidatedInput, ValidationError> {
+  if (!input.email) {
+    return err(new ValidationError("Email is required"));
+  }
+
+  if (!input.password) {
+    return err(new ValidationError("Password is required"));
+  }
+
+  if (input.password.length < 8) {
+    return err(new ValidationError("Password must be at least 8 characters"));
+  }
+
+  return ok(input as ValidatedInput);
+}
+
+// ❌ Bad: Nested conditions without early returns
+function validateUserInput(
+  input: UserInput
+): Result<ValidatedInput, ValidationError> {
+  if (input.email) {
+    if (input.password) {
+      if (input.password.length >= 8) {
+        return ok(input as ValidatedInput);
+      } else {
+        return err(
+          new ValidationError("Password must be at least 8 characters")
+        );
+      }
+    } else {
+      return err(new ValidationError("Password is required"));
+    }
+  } else {
+    return err(new ValidationError("Email is required"));
+  }
+}
+```
+
+### Return Statement Alignment
+
+Align return statements consistently:
+
+```typescript
+// ✅ Good: Consistent return alignment
+function calculateTotal(items: Item[]): Result<number, CalculationError> {
+  if (items.length === 0) {
+    return err(new CalculationError("No items to calculate"));
+  }
+
+  const total = items.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+
+  return ok(total);
+}
+
+// ❌ Bad: Inconsistent return alignment
+function calculateTotal(items: Item[]): Result<number, CalculationError> {
+  if (items.length === 0) {
+    return err(new CalculationError("No items to calculate"));
+  }
+  const total = items.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
+  return ok(total);
+}
+```
+
+## Function Declaration Formatting
+
+### Function Spacing
+
+Add blank lines between function declarations:
+
+```typescript
+// ✅ Good: Blank lines between functions
+function validateEmail(email: string): Result<string, ValidationError> {
+  if (!email.includes("@")) {
+    return err(new ValidationError("Invalid email format"));
+  }
+
+  return ok(email);
+}
+
+function validatePassword(password: string): Result<string, ValidationError> {
+  if (password.length < 8) {
+    return err(new ValidationError("Password too short"));
+  }
+
+  return ok(password);
+}
+
+function validateUser(user: User): Result<User, ValidationError> {
+  const emailResult = validateEmail(user.email);
+  if (emailResult.isErr()) {
+    return emailResult;
+  }
+
+  const passwordResult = validatePassword(user.password);
+  if (passwordResult.isErr()) {
+    return passwordResult;
+  }
+
+  return ok(user);
+}
+
+// ❌ Bad: No spacing between functions
+function validateEmail(email: string): Result<string, ValidationError> {
+  if (!email.includes("@")) {
+    return err(new ValidationError("Invalid email format"));
+  }
+  return ok(email);
+}
+function validatePassword(password: string): Result<string, ValidationError> {
+  if (password.length < 8) {
+    return err(new ValidationError("Password too short"));
+  }
+  return ok(password);
+}
+```
+
+## Interface and Type Declaration Formatting
+
+### Interface Spacing
+
+Add blank lines between interface properties and methods:
+
+```typescript
+// ✅ Good: Proper spacing in interfaces
+interface UserService {
+  createUser(data: CreateUserData): Promise<Result<User, Error>>;
+
+  getUser(id: string): Promise<Result<User, Error>>;
+
+  updateUser(id: string, data: UpdateUserData): Promise<Result<User, Error>>;
+
+  deleteUser(id: string): Promise<Result<void, Error>>;
+}
+
+// ❌ Bad: No spacing in interfaces
+interface UserService {
+  createUser(data: CreateUserData): Promise<Result<User, Error>>;
+  getUser(id: string): Promise<Result<User, Error>>;
+  updateUser(id: string, data: UpdateUserData): Promise<Result<User, Error>>;
+  deleteUser(id: string): Promise<Result<void, Error>>;
+}
+```
+
+## General Readability Rules
+
+### Consistent Indentation
+
+Use consistent 2-space indentation:
+
+```typescript
+// ✅ Good: Consistent 2-space indentation
+class ApiService {
+  private baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  async fetchData<T>(endpoint: string): Promise<Result<T, ApiError>> {
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`);
+
+      if (!response.ok) {
+        return err(new ApiError(`HTTP ${response.status}`));
+      }
+
+      const data = await response.json();
+      return ok(data);
+    } catch (error) {
+      return err(new ApiError("Network error", error));
+    }
+  }
+}
+```
+
+### Logical Grouping
+
+Group related code with blank lines:
+
+```typescript
+// ✅ Good: Logical grouping with spacing
+class DatabaseService {
+  private connection: DatabaseConnection;
+
+  constructor(connection: DatabaseConnection) {
+    this.connection = connection;
+  }
+
+  // User operations
+  async createUser(userData: UserData): Promise<Result<User, DatabaseError>> {
+    // Implementation
+  }
+
+  async getUserById(id: string): Promise<Result<User, DatabaseError>> {
+    // Implementation
+  }
+
+  // Session operations
+  async createSession(
+    sessionData: SessionData
+  ): Promise<Result<Session, DatabaseError>> {
+    // Implementation
+  }
+
+  async getSessionById(id: string): Promise<Result<Session, DatabaseError>> {
+    // Implementation
+  }
+
+  // Utility methods
+  private validateConnection(): Result<void, DatabaseError> {
+    // Implementation
+  }
+
+  private logOperation(operation: string): void {
+    // Implementation
+  }
+}
+```
+
+## Barrel File Import and Re-export
+
+### Barrel File Structure
+
+Use barrel files (index.ts) to create clean import/export patterns:
+
+```typescript
+// ✅ Good: Barrel file structure
+// src/components/index.ts
+export { Button } from "./ui/button";
+export { Card } from "./ui/card";
+export { Input } from "./ui/input";
+export { Header } from "./header";
+export { Footer } from "./footer";
+
+// src/services/index.ts
+export { UserService } from "./user.service";
+export { AuthService } from "./auth.service";
+export { DatabaseService } from "./database.service";
+
+// src/utils/index.ts
+export { ok, err, Result } from "./result";
+export { generateId } from "./uuid";
+export { formatDate, parseDate } from "./date";
+```
+
+### Import from Barrel Files
+
+Always import from barrel files instead of individual files:
+
+```typescript
+// ✅ Good: Import from barrel files
+import { Button, Card, Input } from "@/components";
+import { UserService, AuthService } from "@/services";
+import { ok, err, Result } from "@/utils";
+
+// ❌ Bad: Direct imports from individual files
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { UserService } from "@/services/user.service";
+import { ok } from "@/utils/result";
+```
+
+### Re-export Patterns
+
+Use consistent re-export patterns for better organization:
+
+```typescript
+// ✅ Good: Grouped re-exports with comments
+// src/features/index.ts
+
+// Auth feature exports
+export { SignInForm } from "./auth/components/sign-in-form";
+export { SignUpForm } from "./auth/components/sign-up-form";
+export { useAuth } from "./auth/hooks/use-auth";
+
+// Chat feature exports
+export { ChatInterface } from "./chat/components/chat-interface";
+export { MessageList } from "./chat/components/message-list";
+export { useChat } from "./chat/hooks/use-chat";
+
+// Common utilities
+export { LoadingSpinner } from "./common/components/loading-spinner";
+export { ErrorBoundary } from "./common/components/error-boundary";
+```
+
+### Type-only Re-exports
+
+Separate type exports from value exports:
+
+```typescript
+// ✅ Good: Separate type and value exports
+// src/types/index.ts
+export type { User, CreateUserData, UpdateUserData } from "./user.types";
+export type { Session, SessionData } from "./session.types";
+export type { ApiResponse, ApiError } from "./api.types";
+
+// src/services/index.ts
+export { UserService } from "./user.service";
+export { SessionService } from "./session.service";
+export { ApiService } from "./api.service";
+
+// Usage
+import type { User, CreateUserData } from "@/types";
+import { UserService } from "@/services";
+```
+
+### Nested Barrel Files
+
+Create nested barrel files for complex directory structures:
+
+```typescript
+// ✅ Good: Nested barrel structure
+// src/components/ui/index.ts
+export { Button } from "./button";
+export { Card } from "./card";
+export { Input } from "./input";
+export { Modal } from "./modal";
+
+// src/components/forms/index.ts
+export { LoginForm } from "./login-form";
+export { SignupForm } from "./signup-form";
+export { ContactForm } from "./contact-form";
+
+// src/components/index.ts
+export * from "./ui";
+export * from "./forms";
+export { Header } from "./header";
+export { Footer } from "./footer";
+```
+
+### Default Export Re-exports
+
+Handle default exports properly in barrel files:
+
+```typescript
+// ✅ Good: Re-export default exports
+// src/components/index.ts
+export { default as Button } from "./ui/button";
+export { default as Card } from "./ui/card";
+export { Header } from "./header"; // named export
+
+// ❌ Bad: Mixing default and named exports inconsistently
+// src/components/index.ts
+export { Button } from "./ui/button";
+export { default as Card } from "./ui/card";
+export { Header } from "./header";
+```
+
+### Conditional Re-exports
+
+Use conditional re-exports for environment-specific code:
+
+```typescript
+// ✅ Good: Conditional re-exports
+// src/config/index.ts
+export { databaseConfig } from "./database.config";
+export { authConfig } from "./auth.config";
+
+// Development-only exports
+if (process.env.NODE_ENV === "development") {
+  export { devTools } from "./dev-tools";
+  export { mockData } from "./mock-data";
+}
+
+// Production-only exports
+if (process.env.NODE_ENV === "production") {
+  export { analytics } from "./analytics";
+  export { monitoring } from "./monitoring";
+}
+```
+
+### Barrel File Best Practices
+
+#### Keep Barrel Files Focused
+
+```typescript
+// ✅ Good: Focused barrel file
+// src/api/index.ts - Only API-related exports
+export { ApiClient } from "./api-client";
+export { ApiError } from "./api-error";
+export { apiEndpoints } from "./endpoints";
+
+// ❌ Bad: Mixed concerns in barrel file
+// src/api/index.ts
+export { ApiClient } from "./api-client";
+export { UserService } from "../services/user.service"; // Wrong location
+export { Button } from "../components/ui/button"; // Wrong location
+```
+
+#### Use Consistent Naming
+
+```typescript
+// ✅ Good: Consistent naming pattern
+// src/hooks/index.ts
+export { useAuth } from "./use-auth";
+export { useChat } from "./use-chat";
+export { useLocalStorage } from "./use-local-storage";
+export { useDebounce } from "./use-debounce";
+
+// ❌ Bad: Inconsistent naming
+// src/hooks/index.ts
+export { useAuth } from "./use-auth";
+export { useChat } from "./useChat"; // Different casing
+export { useLocalStorage } from "./localStorage"; // Different naming
+```
+
+#### Document Complex Re-exports
+
+```typescript
+// ✅ Good: Documented complex re-exports
+// src/features/index.ts
+
+/**
+ * Authentication feature exports
+ * Includes components, hooks, and utilities for user authentication
+ */
+export { SignInForm, SignUpForm } from "./auth/components";
+export { useAuth, useAuthGuard } from "./auth/hooks";
+export { authService } from "./auth/services";
+
+/**
+ * Chat feature exports
+ * Includes components and hooks for real-time messaging
+ */
+export { ChatInterface, MessageList, MessageInput } from "./chat/components";
+export { useChat, useMessages } from "./chat/hooks";
+export { chatService } from "./chat/services";
+```
+
+## Naming Conventions
+
+### Variable and Function Naming
+
+Use descriptive, self-documenting names that clearly express intent:
+
+```typescript
+// ✅ Good: Descriptive and clear
+const userAuthenticationResult = await authenticateUser(credentials);
+const isUserLoggedIn = checkAuthenticationStatus();
+const hasValidSession = validateSessionToken(sessionToken);
+
+function calculateTotalPrice(
+  items: CartItem[]
+): Result<number, CalculationError> {
+  // Implementation
+}
+
+function validateUserInput(
+  input: UserRegistrationData
+): Result<ValidatedInput, ValidationError> {
+  // Implementation
+}
+
+// ❌ Bad: Unclear or abbreviated
+const authRes = await auth(creds);
+const loggedIn = check();
+const valid = validate(token);
+
+function calc(items: Item[]): Result<number, Error> {
+  // Implementation
+}
+
+function val(input: Data): Result<ValidatedData, Error> {
+  // Implementation
+}
+```
+
+### Boolean Naming
+
+Use clear boolean prefixes and descriptive names:
+
+```typescript
+// ✅ Good: Clear boolean naming
+const isAuthenticated = user.session !== null;
+const hasPermission = checkUserPermissions(user, resource);
+const shouldRetry = attemptCount < maxRetries;
+const canEdit = user.role === "admin" || user.role === "editor";
+const willExpire = session.expiresAt < Date.now();
+
+// ❌ Bad: Unclear boolean naming
+const auth = user.session !== null;
+const permission = checkUserPermissions(user, resource);
+const retry = attemptCount < maxRetries;
+const edit = user.role === "admin" || user.role === "editor";
+const expire = session.expiresAt < Date.now();
+```
+
+### Function Naming
+
+Use verb-noun patterns for functions that perform actions:
+
+```typescript
+// ✅ Good: Clear action-based naming
+function createUserAccount(
+  userData: CreateUserData
+): Promise<Result<User, ValidationError>> {
+  // Implementation
+}
+
+function validateEmailAddress(email: string): Result<string, ValidationError> {
+  // Implementation
+}
+
+function generateAuthToken(user: User): Result<AuthToken, TokenError> {
+  // Implementation
+}
+
+function sendWelcomeEmail(user: User): Promise<Result<void, EmailError>> {
+  // Implementation
+}
+
+// ❌ Bad: Unclear or noun-based naming
+function user(
+  userData: CreateUserData
+): Promise<Result<User, ValidationError>> {
+  // Implementation
+}
+
+function email(email: string): Result<string, ValidationError> {
+  // Implementation
+}
+
+function token(user: User): Result<AuthToken, TokenError> {
+  // Implementation
+}
+
+function email(user: User): Promise<Result<void, EmailError>> {
+  // Implementation
+}
+```
+
+### Class and Interface Naming
+
+Use PascalCase for classes and interfaces with descriptive names:
+
+```typescript
+// ✅ Good: Clear class and interface naming
+class UserAuthenticationService {
+  // Implementation
+}
+
+interface UserRegistrationData {
+  email: string;
+  password: string;
+  profile: UserProfile;
+}
+
+class DatabaseConnectionManager {
+  // Implementation
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error?: string;
+}
+
+// ❌ Bad: Unclear or abbreviated naming
+class AuthSvc {
+  // Implementation
+}
+
+interface UserRegData {
+  email: string;
+  password: string;
+  profile: UserProfile;
+}
+
+class DBConnMgr {
+  // Implementation
+}
+
+interface APIResp<T> {
+  success: boolean;
+  data: T;
+  error?: string;
+}
+```
+
+### Constant Naming
+
+Use SCREAMING_SNAKE_CASE for constants with descriptive names:
+
+```typescript
+// ✅ Good: Clear constant naming
+const MAX_LOGIN_ATTEMPTS = 3;
+const DEFAULT_SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
+const SUPPORTED_FILE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
+// ❌ Bad: Unclear constant naming
+const MAX_ATTEMPTS = 3;
+const TIMEOUT = 30 * 60 * 1000;
+const URL = process.env.API_BASE_URL || "http://localhost:3000";
+const TYPES = ["image/jpeg", "image/png", "image/gif"];
+```
+
+### Event Handler Naming
+
+Use descriptive event handler names that indicate the action:
+
+```typescript
+// ✅ Good: Clear event handler naming
+function handleUserLogin(event: LoginEvent): void {
+  // Implementation
+}
+
+function handleFormSubmission(event: FormEvent): void {
+  // Implementation
+}
+
+function handleButtonClick(event: MouseEvent): void {
+  // Implementation
+}
+
+function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
+  // Implementation
+}
+
+// ❌ Bad: Generic event handler naming
+function handle(event: LoginEvent): void {
+  // Implementation
+}
+
+function submit(event: FormEvent): void {
+  // Implementation
+}
+
+function click(event: MouseEvent): void {
+  // Implementation
+}
+
+function change(event: ChangeEvent<HTMLInputElement>): void {
+  // Implementation
+}
+```
+
+### Error Naming
+
+Use descriptive error class names that indicate the type of error:
+
+```typescript
+// ✅ Good: Clear error naming
+class UserAuthenticationError extends Error {
+  constructor(message: string, public field: string) {
+    super(message);
+    this.name = "UserAuthenticationError";
+  }
+}
+
+class DatabaseConnectionError extends Error {
+  constructor(message: string, public originalError?: Error) {
+    super(message);
+    this.name = "DatabaseConnectionError";
+  }
+}
+
+class ValidationError extends Error {
+  constructor(message: string, public field: string) {
+    super(message);
+    this.name = "ValidationError";
+  }
+}
+
+// ❌ Bad: Generic error naming
+class Error extends Error {
+  constructor(message: string, public field: string) {
+    super(message);
+    this.name = "Error";
+  }
+}
+
+class DBError extends Error {
+  constructor(message: string, public originalError?: Error) {
+    super(message);
+    this.name = "DBError";
+  }
+}
+
+class ValError extends Error {
+  constructor(message: string, public field: string) {
+    super(message);
+    this.name = "ValError";
+  }
+}
+```
+
+### File and Directory Naming
+
+Use kebab-case for files and directories with descriptive names:
+
+```typescript
+// ✅ Good: Clear file and directory naming
+// src/components/user-authentication-form.tsx
+// src/services/user-management.service.ts
+// src/utils/date-formatter.ts
+// src/hooks/use-user-session.ts
+// src/types/api-response.types.ts
+
+// ❌ Bad: Unclear or inconsistent naming
+// src/components/userAuthForm.tsx
+// src/services/userMgtSvc.ts
+// src/utils/dateFmt.ts
+// src/hooks/useUserSess.ts
+// src/types/apiResp.ts
+```
+
+### Generic Type Naming
+
+Use descriptive single-letter names for generic types:
+
+```typescript
+// ✅ Good: Clear generic type naming
+interface ApiResponse<TData> {
+  success: boolean;
+  data: TData;
+  error?: string;
+}
+
+interface Repository<TEntity, TId> {
+  findById(id: TId): Promise<Result<TEntity, NotFoundError>>;
+  save(entity: TEntity): Promise<Result<TEntity, DatabaseError>>;
+}
+
+function processItems<TItem, TResult>(
+  items: TItem[],
+  processor: (item: TItem) => TResult
+): TResult[] {
+  return items.map(processor);
+}
+
+// ❌ Bad: Unclear generic type naming
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error?: string;
+}
+
+interface Repository<E, I> {
+  findById(id: I): Promise<Result<E, NotFoundError>>;
+  save(entity: E): Promise<Result<E, DatabaseError>>;
+}
+
+function processItems<I, R>(items: I[], processor: (item: I) => R): R[] {
+  return items.map(processor);
+}
+```
+
+### Result Pattern Naming
+
+Use consistent naming for Result pattern implementations:
+
+```typescript
+// ✅ Good: Clear Result pattern naming
+function createUser(
+  userData: CreateUserData
+): Promise<Result<User, UserCreationError>> {
+  // Implementation
+}
+
+function validateUserInput(
+  input: UserInput
+): Result<ValidatedUserInput, ValidationError> {
+  // Implementation
+}
+
+function fetchUserById(id: string): Promise<Result<User, UserNotFoundError>> {
+  // Implementation
+}
+
+// ❌ Bad: Inconsistent Result pattern naming
+function createUser(userData: CreateUserData): Promise<Result<User, Error>> {
+  // Implementation
+}
+
+function validateUserInput(
+  input: UserInput
+): Result<ValidatedUserInput, string> {
+  // Implementation
+}
+
+function fetchUserById(id: string): Promise<Result<User, any>> {
+  // Implementation
+}
+```
+
+### Naming Best Practices
+
+#### Use Meaningful Names
+
+```typescript
+// ✅ Good: Names that explain the purpose
+const userAuthenticationStatus = checkUserAuthentication();
+const passwordValidationResult = validatePasswordStrength(password);
+const sessionExpirationTime = calculateSessionExpiration();
+
+// ❌ Bad: Names that don't explain purpose
+const status = checkUserAuthentication();
+const result = validatePasswordStrength(password);
+const time = calculateSessionExpiration();
+```
+
+#### Avoid Abbreviations
+
+```typescript
+// ✅ Good: Full descriptive names
+const userAuthenticationToken = generateAuthToken(user);
+const databaseConnectionPool = createConnectionPool();
+const emailValidationService = new EmailValidationService();
+
+// ❌ Bad: Unnecessary abbreviations
+const userAuthToken = generateAuthToken(user);
+const dbConnPool = createConnectionPool();
+const emailValSvc = new EmailValidationService();
+```
+
+#### Use Consistent Terminology
+
+```typescript
+// ✅ Good: Consistent terminology throughout
+interface User {
+  id: string;
+  email: string;
+  profile: UserProfile;
+}
+
+class UserService {
+  async createUser(
+    userData: CreateUserData
+  ): Promise<Result<User, UserCreationError>> {
+    // Implementation
+  }
+
+  async updateUser(
+    userId: string,
+    userData: UpdateUserData
+  ): Promise<Result<User, UserUpdateError>> {
+    // Implementation
+  }
+}
+
+// ❌ Bad: Inconsistent terminology
+interface User {
+  id: string;
+  email: string;
+  profile: UserProfile;
+}
+
+class UserService {
+  async createUser(
+    userData: CreateUserData
+  ): Promise<Result<User, UserCreationError>> {
+    // Implementation
+  }
+
+  async updateAccount(
+    accountId: string,
+    accountData: UpdateUserData
+  ): Promise<Result<User, UserUpdateError>> {
+    // Implementation
+  }
+}
+```
+
+These practices ensure consistent, readable code that follows the project's Result pattern and maintains high code quality standards.
