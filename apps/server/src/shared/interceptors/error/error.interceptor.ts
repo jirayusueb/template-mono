@@ -1,14 +1,14 @@
 import { Elysia } from "elysia";
 
-import { StatusCodes } from "@/shared/const";
+import { StatusCodes } from "../../const";
 import {
   ConflictError,
   ForbiddenError,
   NotFoundError,
   UnauthorizedError,
   ValidationError,
-} from "@/shared/errors";
-import { Response } from "@/shared/utils";
+} from "../../errors";
+import { Response } from "../../utils";
 
 const errorInterceptor = new Elysia({ name: "error-interceptor" }).onError(
   ({ error, set }) => {

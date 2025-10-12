@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
 
-import { StatusCodes } from "@/shared/const";
-import { auth } from "@/shared/lib";
+import { StatusCodes } from "../../const";
+import { auth } from "../../lib";
 
 const authMiddleware = new Elysia({ name: "auth-middleware" }).macro({
   auth: {

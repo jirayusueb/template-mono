@@ -1,11 +1,11 @@
 import "dotenv/config";
 import { Elysia } from "elysia";
 
-import { StatusCodes } from "@/shared/const";
-import { loggerIntegration, openapiIntegration } from "@/shared/integrations";
-import { errorInterceptor } from "@/shared/interceptors";
-import { auth } from "@/shared/lib";
-import { corsMiddleware } from "@/shared/middleware";
+import { StatusCodes } from "./shared/const";
+import { loggerIntegration, openapiIntegration } from "./shared/integrations";
+import { errorInterceptor } from "./shared/interceptors";
+import { auth } from "./shared/lib";
+import { corsMiddleware } from "./shared/middleware";
 
 import { routers } from "./routers";
 

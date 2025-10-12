@@ -1,7 +1,7 @@
 import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
 
-import { corsConfig } from "@/shared/config";
+import { corsConfig } from "../../config";
 
 const corsMiddleware = new Elysia({ name: "cors-middleware" })
   .use(corsConfig)

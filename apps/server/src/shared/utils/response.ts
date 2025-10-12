@@ -1,4 +1,4 @@
-import { StatusCodes } from "@/shared/const";
+import { StatusCodes } from "../const";
 
 // Standard API response types
 // This file is exported via @/utils barrel export

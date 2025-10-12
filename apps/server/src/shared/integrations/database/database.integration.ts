@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 
-import { db } from "@/db";
+import { db } from "../../../db";
 
 const databaseIntegration = new Elysia({
   name: "database-integration",
