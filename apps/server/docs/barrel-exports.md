@@ -43,7 +43,6 @@ import { Response, ok, err, Result } from "@/utils";
 - `ok` - Result pattern success function
 - `err` - Result pattern error function  
 - `Result` - Result pattern type
-- `match` - Pattern matching utility
 - `generateId` - UUID generation function
 
 ### `@/errors` - Error Classes
@@ -98,7 +97,6 @@ import {
   ok,
   err,
   Result,
-  match,
   generateId
 } from "@/utils";
 ```
@@ -111,11 +109,10 @@ import {
 import { StatusCodes } from "@/consts/http-status.const";
 import { Response } from "@/utils/response";
 import { ok, err } from "@/utils/result";
-import { match } from "@/utils/match";
 
 // ✅ After: Clean, short paths
 import { StatusCodes } from "@/consts";
-import { Response, ok, err, match } from "@/utils";
+import { Response, ok, err } from "@/utils";
 ```
 
 ### 2. **Easier Refactoring**
@@ -144,7 +141,6 @@ src/
 │   ├── index.ts          # Barrel export for utilities
 │   ├── response.ts
 │   ├── result.ts
-│   ├── match.ts
 │   └── uuid.ts
 └── docs/
     └── barrel-exports.md # This documentation
@@ -159,7 +155,6 @@ export * from "./http-status.const";
 
 ### Utils Barrel (`@/utils/index.ts`)
 ```typescript
-export * from "./match";
 export * from "./response";
 export * from "./result";
 export * from "./uuid";
@@ -174,13 +169,12 @@ export * from "./uuid";
 import { StatusCodes } from "@/consts/http-status.const";
 import { Response } from "@/utils/response";
 import { ok, err } from "@/utils/result";
-import { match } from "@/utils/match";
 ```
 
 **After:**
 ```typescript
 import { StatusCodes } from "@/consts";
-import { Response, ok, err, match } from "@/utils";
+import { Response, ok, err } from "@/utils";
 ```
 
 ### Step-by-Step Migration
@@ -209,10 +203,9 @@ import { Response, ok, err, match } from "@/utils";
    // Instead of multiple import lines:
    import { Response } from "@/utils/response";
    import { ok, err } from "@/utils/result";
-   import { match } from "@/utils/match";
 
    // Use single import:
-   import { Response, ok, err, match } from "@/utils";
+   import { Response, ok, err } from "@/utils";
    ```
 
 ## Best Practices
@@ -249,7 +242,6 @@ import {
   ok,
   err,
   Result,
-  match
 } from "@/utils";
 
 // ❌ Bad: Single import for multiple uses
