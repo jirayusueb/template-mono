@@ -13,25 +13,24 @@ This project uses Elysia.js as the backend framework with specific patterns for 
 ### Application Structure
 
 ```typescript
-// Main application setup
+// Main application setup with current project structure
 const app = new Elysia()
-  .use(loggerPlugin)
-  .use(corsPlugin)
-  .use(openapiPlugin)
+  .use(loggerIntegration)      // Logging integration
+  .use(openapiIntegration)     // API documentation
+  .use(errorInterceptor)       // Global error handling
+  .use(corsMiddleware)         // CORS configuration
   .all("/api/auth/*", ({ request, set }) => {
     if (["POST", "GET"].includes(request.method)) {
       return auth.handler(request);
     }
-    set.status = METHOD_NOT_ALLOWED;
+    set.status = StatusCodes.METHOD_NOT_ALLOWED;
     return { error: "Method not allowed" };
   })
-  .use(registerRouters)
-  .onError(({ error }) => {
-    console.error(error);
-  })
-  .listen(PORT);
+  .use(routers)               // All API routes
+  .listen(Number.parseInt(process.env.PORT || "3001", 10));
 
 export type App = typeof app;
+export type Routers = typeof routers;
 ```
 
 ### Router Organization
@@ -169,33 +168,23 @@ export const corsPlugin = new Elysia({ name: "cors" }).use(
 ### Health Check Pattern
 
 ```typescript
-export const healthRouter = new Elysia({ prefix: "/health" })
-  .get(
-    "/",
-    async () => {
-      const result = await healthService.performHealthCheck();
+// Current project health router implementation
+const healthRouter = new Elysia({ prefix: "/health" }).get("/", ({ set }) => {
+  const startTime = Date.now();
+  const responseTime = Date.now() - startTime;
 
-      if (!result.success) {
-        return {
-          success: false,
-          error: result.error?.message || "Health check failed",
-        };
-      }
+  set.status = StatusCodes.OK;
 
-      return {
-        success: true,
-        data: result.value,
-      };
-    },
-    {
-      response: {
-        200: HealthResponseSchema,
-        500: HealthResponseSchema,
-      },
-    }
-  )
-  .get("/ready", readyHandler)
-  .get("/live", liveHandler);
+  return Response.ok({
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: "1.0.0",
+    responseTime,
+    status: "healthy",
+  });
+});
+
+export default healthRouter;
 ```
 
 ## Schema Validation Patterns
@@ -239,6 +228,8 @@ const HealthResponseSchema = z.object({
 
 ### Result Pattern Integration
 
+The project uses a comprehensive Result pattern for type-safe error handling:
+
 ```typescript
 // Use Result pattern for error handling
 .post(
@@ -260,6 +251,20 @@ const HealthResponseSchema = z.object({
     },
   }
 )
+
+// Result pattern usage examples
+const result = await fetchUser(id);
+if (result.isOk()) {
+  console.log(result.value);
+} else {
+  console.error(result.error);
+}
+
+// Chaining operations
+const processedResult = result
+  .map(user => user.name)
+  .andThen(name => validateName(name))
+  .unwrapOr("Default Name");
 ```
 
 ### Error Response Helpers
@@ -292,15 +297,14 @@ if (validationErrors.length > 0) {
 ### Centralized Router Management
 
 ```typescript
-// routers/index.ts
-export function registerRouters(app: Elysia) {
-  return app.use(healthRouter).use(chatRouter).use(knowledgeBaseV2Router);
-}
+// routers/index.ts - Current project implementation
+import healthRouter from "./health/health.router";
+
+export const routers = new Elysia()
+  .use(healthRouter);
 
 // Individual router exports
-export { chatRouter } from "./chat.router";
-export { healthRouter } from "./health.router";
-export { knowledgeBaseV2Router } from "./knowledge-base-v2.router";
+export { default as healthRouter } from "./health/health.router";
 ```
 
 ### Router Configuration
@@ -683,5 +687,78 @@ it("should return 401 for unauthorized request", async () => {
   expect(response.status).toBe(401);
 });
 ```
+
+## Current Project Implementation
+
+### Project-Specific Patterns
+
+The template-mono project implements these specific patterns:
+
+#### 1. Plugin Architecture
+```typescript
+// Current server setup in apps/server/src/index.ts
+const app = new Elysia()
+  .use(loggerIntegration)      // Logging
+  .use(openapiIntegration)     // API docs
+  .use(errorInterceptor)       // Error handling
+  .use(corsMiddleware)         // CORS
+  .all("/api/auth/*", authHandler)  // Better-Auth integration
+  .use(routers)               // API routes
+  .listen(Number.parseInt(process.env.PORT || "3001", 10));
+```
+
+#### 2. Health Check Implementation
+```typescript
+// apps/server/src/routers/health/health.router.ts
+const healthRouter = new Elysia({ prefix: "/health" }).get("/", ({ set }) => {
+  const startTime = Date.now();
+  const responseTime = Date.now() - startTime;
+
+  set.status = StatusCodes.OK;
+
+  return Response.ok({
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: "1.0.0",
+    responseTime,
+    status: "healthy",
+  });
+});
+```
+
+#### 3. Better-Auth Integration
+```typescript
+// Authentication handler for all /api/auth/* routes
+.all("/api/auth/*", ({ request, set }) => {
+  if (["POST", "GET"].includes(request.method)) {
+    return auth.handler(request);
+  }
+  set.status = StatusCodes.METHOD_NOT_ALLOWED;
+  return { error: "Method not allowed" };
+})
+```
+
+#### 4. Type-Safe Router Exports
+```typescript
+// Export types for frontend consumption
+export type App = typeof app;
+export type Routers = typeof routers;
+```
+
+### Development Workflow
+
+1. **Start Development**: `bun dev` (both frontend and backend)
+2. **Database Operations**: `bun db:push`, `bun db:studio`
+3. **Code Quality**: `bun check`, `bun check-types`
+4. **Build**: `bun build`
+
+### Key Features Implemented
+
+- **Health Monitoring**: Real-time system status with TanStack Query
+- **Authentication**: Complete sign-in/sign-up flow with Better-Auth
+- **Type Safety**: End-to-end TypeScript with strict mode
+- **Error Handling**: Comprehensive Result pattern implementation
+- **API Documentation**: OpenAPI integration for API docs
+- **Database Management**: Drizzle ORM with SQLite for development
 
 This pattern guide ensures consistent, type-safe, and maintainable Elysia.js applications following the project's architectural principles.

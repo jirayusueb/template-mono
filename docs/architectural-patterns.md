@@ -341,23 +341,13 @@ export const errorInterceptor = new Elysia({ name: "error" })
   });
 ```
 
-## Testing Architecture
+## Development Architecture
 
-### Testing Strategy
-- **Unit Tests**: Individual functions and components
-- **Integration Tests**: Feature workflows and API endpoints
-- **E2E Tests**: Complete user journeys
-- **Contract Tests**: API contracts between frontend and backend
-
-### Test Structure
-```
-tests/
-├── unit/              # Unit tests
-├── integration/       # Integration tests
-├── e2e/              # End-to-end tests
-├── fixtures/         # Test data and fixtures
-└── utils/            # Test utilities
-```
+### Code Organization Strategy
+- **Container Pattern**: Feature-based frontend organization
+- **Plugin Architecture**: Modular server components
+- **Result Pattern**: Type-safe error handling
+- **Barrel Exports**: Clean import organization
 
 ## Performance Architecture
 
@@ -425,9 +415,10 @@ tests/
 - Implement error boundaries for unexpected errors
 - Provide meaningful error messages to users
 
-### 5. Testing
-- Write tests for all business logic
-- Test error scenarios and edge cases
-- Maintain high test coverage
+### 5. Code Quality
+- Use Biome for linting and formatting
+- Follow Ultracite code quality standards
+- Maintain type safety throughout
+- Use consistent patterns across the codebase
 
 This architectural pattern system provides a solid foundation for building scalable, maintainable applications while following modern best practices and maintaining type safety throughout the stack.

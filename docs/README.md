@@ -12,7 +12,6 @@ This directory contains comprehensive documentation for the project's patterns, 
 ### Development Patterns
 - **[Component Patterns](./component-patterns.md)** - React component patterns and best practices
 - **[Error Handling Patterns](./error-handling-patterns.md)** - Comprehensive error handling strategies
-- **[Testing Patterns](./testing-patterns.md)** - Testing strategies and patterns
 
 ## Quick Reference
 
@@ -24,7 +23,6 @@ This directory contains comprehensive documentation for the project's patterns, 
 ### Development Workflow
 1. Follow [Re-export Patterns](./re-export-patterns.md) for clean imports
 2. Implement [Error Handling Patterns](./error-handling-patterns.md) for robust error management
-3. Write tests following [Testing Patterns](./testing-patterns.md)
 
 ### Key Concepts
 

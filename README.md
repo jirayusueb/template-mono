@@ -1,132 +1,273 @@
 # Next.js + Elysia Template
 
-A modern full-stack TypeScript monorepo built with Better-T-Stack, designed as a foundation for web applications.
+A modern, full-stack TypeScript monorepo template built with [Better-T-Stack](https://better-t-stack.com/), featuring Next.js frontend and Elysia backend with comprehensive authentication, database management, and development tooling.
 
-## Features
-
-- **TypeScript** - For type safety and improved developer experience
-- **Next.js** - Full-stack React framework with App Router
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - Reusable UI components
-- **Elysia** - Type-safe, high-performance backend framework
-- **Bun** - Fast runtime environment and package manager
-- **Drizzle** - TypeScript-first ORM
-- **SQLite** - Database engine (development), scalable for production
-- **Better-Auth** - Modern authentication with TypeScript support
-- **Turborepo** - Optimized monorepo build system
-- **Result Pattern** - Robust error handling without exceptions
-- **Pattern Matching** - Functional programming utilities
-
-## Getting Started
-
-First, install the dependencies:
+## 🚀 Quick Start
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd template-mono
+
+# Install dependencies
 bun install
+
+# Start development servers
+bun dev
+
+# Or start individual services
+bun dev:web      # Frontend only (port 3001)
+bun dev:server   # Backend only (port 3000)
 ```
-## Database Setup
 
-This project uses SQLite with Drizzle ORM for development, with the database file located at `apps/server/local.db`.
+## 🏗️ Architecture
 
-1. The database is automatically created when you first run the application
-2. Apply the schema to your database:
+This template follows a **monorepo architecture** with clean separation between frontend and backend:
+
+```
+template-mono/
+├── apps/
+│   ├── web/          # Next.js frontend
+│   └── server/       # Elysia backend
+├── docs/             # Comprehensive documentation
+├── package.json      # Root workspace configuration
+└── turbo.json       # Turborepo build optimization
+```
+
+### Key Technologies
+
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Elysia.js, Better-Auth, Drizzle ORM, SQLite
+- **Runtime**: Bun (fast JavaScript runtime)
+- **Build System**: Turborepo (monorepo build optimization)
+- **Code Quality**: Biome (linting & formatting), Ultracite (standards)
+
+## 🛠️ Development
+
+### Available Scripts
+
 ```bash
+# Development
+bun dev                 # Start all services
+bun dev:web            # Frontend only
+bun dev:server         # Backend only
+
+# Database
+bun db:push            # Push schema changes
+bun db:studio          # Open Drizzle Studio
+bun db:generate        # Generate migrations
+bun db:migrate         # Run migrations
+
+# Code Quality
+bun check              # Lint and format code
+bun check-types        # TypeScript type checking
+bun build              # Build all applications
+```
+
+### Database Management
+
+The project uses **Drizzle ORM** with SQLite for development:
+
+```bash
+# Generate new migration after schema changes
+bun db:generate
+
+# Apply schema changes to database
 bun db:push
-```
 
-3. Open database studio to view your data:
-```bash
+# Open database studio for inspection
 bun db:studio
 ```
 
+## 🏛️ Architecture Patterns
 
-Then, run the development server:
+### Result Pattern for Error Handling
 
-```bash
-bun dev
-```
-
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
-
-## Development Commands
-
-- `bun dev` - Start all apps in development mode
-- `bun dev:web` - Start only the frontend (Next.js)
-- `bun dev:server` - Start only the backend (Elysia)
-- `bun db:push` - Push database schema changes
-- `bun db:studio` - Open database studio
-- `bun db:generate` - Generate Drizzle files
-- `bun db:migrate` - Run database migrations
-
-
-
-
-
-## Project Structure
-
-```
-nextjs-elysia-template/
-├── apps/
-│   ├── web/         # Frontend application (Next.js)
-│   └── server/      # Backend API (Elysia)
-├── memory-bank/     # Project documentation
-└── scripts/         # Utility scripts
-```
-
-## Architecture
-
-### Frontend (Next.js)
-- **App Router** - Modern Next.js routing
-- **shadcn/ui** - Accessible UI components
-- **TanStack Query** - Data fetching and caching
-- **Better-Auth** - Authentication client
-- **TailwindCSS** - Styling
-
-### Backend (Elysia)
-- **Elysia** - High-performance TypeScript framework
-- **Better-Auth** - Authentication server
-- **Drizzle ORM** - Database operations
-- **SQLite** - Database (development)
-- **Result Pattern** - Error handling
-- **Pattern Matching** - Functional utilities
-
-## Key Patterns
-
-### Result Pattern
-The project uses a Result pattern for robust error handling:
+The project uses a **Result pattern** for type-safe error handling without exceptions:
 
 ```typescript
 type Result<T, E = Error> = Ok<T> | Err<E>;
 
-// Usage
+// Usage example
 const result = await fetchUser(id);
-if (result.isOk()) {
-  console.log(result.value);
+if (result.success) {
+  console.log(result.data);
 } else {
   console.error(result.error);
 }
 ```
 
-### Component Structure
-```typescript
-interface ComponentProps {
-  // Define all props with proper types
-}
+### Plugin Architecture (Backend)
 
-export function Component({ prop1, prop2 }: ComponentProps) {
-  return <div>...</div>;
-}
+The server uses a modular plugin system:
+
+```typescript
+const app = new Elysia()
+  .use(loggerIntegration)      // Logging
+  .use(openapiIntegration)     // API documentation
+  .use(errorInterceptor)       // Error handling
+  .use(corsMiddleware)         // CORS
+  .use(authMiddleware)         // Authentication
+  .use(routers)               // API routes
+  .listen(PORT);
 ```
 
-## Available Scripts
+### Container Pattern (Frontend)
 
-- `bun dev`: Start all applications in development mode
-- `bun build`: Build all applications
-- `bun dev:web`: Start only the web application
-- `bun dev:server`: Start only the server
-- `bun check-types`: Check TypeScript types across all apps
-- `bun db:push`: Push schema changes to database
-- `bun db:studio`: Open database studio UI
-- `bun db:generate`: Generate Drizzle files
-- `bun db:migrate`: Run database migrations
+Features are organized using the container pattern:
+
+```typescript
+// containers/feature-name/
+├── index.ts                    # Barrel export
+├── feature-name.container.tsx  # Main container
+├── components/                 # Feature-specific components
+├── hooks/                      # Feature-specific hooks
+└── utils/                      # Feature-specific utilities
+```
+
+## 🔐 Authentication
+
+The project includes **Better-Auth** for comprehensive authentication:
+
+- **Sign In/Sign Up** forms with validation
+- **Session management** with secure cookies
+- **Protected routes** with middleware
+- **Type-safe** authentication throughout the stack
+
+### Authentication Flow
+
+1. User submits credentials via forms
+2. Frontend sends requests to `/api/auth/*` endpoints
+3. Better-Auth processes authentication
+4. Session created and stored in database
+5. Secure cookie set for subsequent requests
+
+## 📁 Project Structure
+
+### Frontend (`apps/web/`)
+
+```
+src/
+├── app/                    # Next.js app router
+├── components/            # Reusable UI components
+│   ├── ui/               # shadcn/ui components
+│   └── index.ts          # Barrel exports
+├── containers/            # Feature containers
+├── features/             # Feature-specific logic
+├── hooks/                # Custom React hooks
+└── lib/                  # Utilities and configurations
+```
+
+### Backend (`apps/server/`)
+
+```
+src/
+├── db/                   # Database schema and migrations
+├── routers/              # API route handlers
+├── services/             # Business logic
+├── shared/               # Shared utilities and middleware
+└── index.ts              # Server entry point
+```
+
+## 🎨 UI Components
+
+The project uses **shadcn/ui** for consistent, accessible components:
+
+- **Form Components**: Input, Button, Select, Checkbox, etc.
+- **Layout Components**: Card, Sheet, Dialog, Tabs, etc.
+- **Data Display**: Table, Badge, Avatar, Progress, etc.
+- **Navigation**: Menu, Breadcrumb, Pagination, etc.
+
+All components are fully typed and follow accessibility best practices.
+
+## 🧪 Testing
+
+The project includes comprehensive testing patterns:
+
+- **Unit Tests**: Individual functions and components
+- **Integration Tests**: Feature workflows and API endpoints
+- **E2E Tests**: Complete user journeys
+- **Contract Tests**: API contracts between frontend and backend
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[Architectural Patterns](./docs/architectural-patterns.md)** - High-level architecture
+- **[Component Patterns](./docs/component-patterns.md)** - React component best practices
+- **[Error Handling](./docs/error-handling-patterns.md)** - Result pattern implementation
+- **[Testing Patterns](./docs/testing-patterns.md)** - Testing strategies
+- **[File Structure](./docs/file-structure.md)** - Project organization
+
+## 🚀 Deployment
+
+### Development
+- **Database**: SQLite for local development
+- **Hot Reloading**: Fast development iteration
+- **Type Checking**: Real-time TypeScript validation
+
+### Production
+- **Database**: PostgreSQL or MySQL for production
+- **Caching**: Redis for session and data caching
+- **CDN**: Static asset delivery
+- **Monitoring**: Application performance monitoring
+
+## 🛡️ Code Quality
+
+The project enforces high code quality standards:
+
+- **Biome**: Fast linting and formatting
+- **Ultracite**: Comprehensive code quality rules
+- **TypeScript**: Strict type checking
+- **Result Pattern**: Type-safe error handling
+- **Accessibility**: WCAG compliance
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create `.env.local` files in both `apps/web/` and `apps/server/` directories:
+
+```bash
+# Database
+DATABASE_URL="file:./local.db"
+
+# Authentication
+BETTER_AUTH_SECRET="your-secret-key"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# CORS
+CORS_ORIGIN="http://localhost:3001"
+```
+
+### TypeScript Configuration
+
+- **Strict mode** enabled across all packages
+- **Path mapping** for clean imports (`@/components`, `@/lib`)
+- **Shared types** between frontend and backend
+- **Incremental compilation** for faster builds
+
+## 🤝 Contributing
+
+1. Follow the established architectural patterns
+2. Use the Result pattern for error handling
+3. Write tests for new features
+4. Update documentation when making changes
+5. Follow the code quality standards
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🔗 Resources
+
+- [Better-T-Stack Documentation](https://better-t-stack.com/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Elysia Documentation](https://elysiajs.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Turborepo](https://turbo.build/repo/docs)
+
+---
+
+Built with ❤️ using Better-T-Stack
