@@ -1,30 +1,41 @@
 {
-  "name": "nextjs-elysia-template",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "check": "biome check --write .",
-    "ruler:apply": "bunx @intellectronica/ruler@latest apply --local-only",
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
-    "dev:web": "turbo -F @workspace/web dev",
-    "dev:server": "turbo -F @workspace/server dev",
-    "db:push": "turbo -F @workspace/server db:push",
-    "db:studio": "turbo -F @workspace/server db:studio",
-    "db:generate": "turbo -F @workspace/server db:generate",
-    "db:migrate": "turbo -F @workspace/server db:migrate"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "turbo": "^2.5.8",
-    "@biomejs/biome": "^2.2.6",
-    "ultracite": "^5.6.4"
-  },
-  "packageManager": "bun@1.2.12"
+	"name": "nextjs-elysia-template",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"check": "biome check --write .",
+		"check:ci": "biome check .",
+		"ruler:apply": "bunx @intellectronica/ruler@latest apply --local-only",
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"build:shared": "turbo -F @workspace/shared build",
+		"check-types": "turbo check-types",
+		"test": "turbo test",
+		"test:web": "turbo -F @workspace/web test",
+		"test:server": "turbo -F @workspace/server test",
+		"test:coverage": "turbo test:coverage",
+		"lint": "turbo lint",
+		"lint:fix": "turbo lint:fix",
+		"dev:native": "turbo -F native dev",
+		"dev:web": "turbo -F @workspace/web dev",
+		"dev:server": "turbo -F @workspace/server dev",
+		"db:push": "turbo -F @workspace/server db:push",
+		"db:studio": "turbo -F @workspace/server db:studio",
+		"db:generate": "turbo -F @workspace/server db:generate",
+		"db:migrate": "turbo -F @workspace/server db:migrate",
+		"clean": "turbo clean && rm -rf node_modules/.cache .turbo",
+		"format": "biome format --write .",
+		"format:check": "biome format ."
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.6",
+		"turbo": "^2.5.8",
+		"ultracite": "^6.1.0"
+	},
+	"packageManager": "bun@1.2.12"
 }
