@@ -7,8 +7,6 @@
 		"packages/*"
 	],
 	"scripts": {
-		"check": "biome check --write .",
-		"check:ci": "biome check .",
 		"ruler:apply": "bunx @intellectronica/ruler@latest apply --local-only",
 		"dev": "turbo dev",
 		"build": "turbo build",
@@ -18,8 +16,6 @@
 		"test:web": "turbo -F @workspace/web test",
 		"test:server": "turbo -F @workspace/server test",
 		"test:coverage": "turbo test:coverage",
-		"lint": "turbo lint",
-		"lint:fix": "turbo lint:fix",
 		"dev:native": "turbo -F native dev",
 		"dev:web": "turbo -F @workspace/web dev",
 		"dev:server": "turbo -F @workspace/server dev",
@@ -28,6 +24,8 @@
 		"db:generate": "turbo -F @workspace/server db:generate",
 		"db:migrate": "turbo -F @workspace/server db:migrate",
 		"clean": "turbo clean && rm -rf node_modules/.cache .turbo",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
 		"format": "biome format --write .",
 		"format:check": "biome format ."
 	},
