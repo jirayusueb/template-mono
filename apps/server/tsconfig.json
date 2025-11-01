@@ -1,16 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "verbatimModuleSyntax": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
-    "types": ["bun"],
-    "composite": true,
-    "jsx": "react-jsx"
-  }
+	"extends": "@workspace/ts-config/server.json",
+	"compilerOptions": {
+		"paths": {
+			"@workspace/shared": ["../packages/shared/src/*"]
+		}
+	}
 }
