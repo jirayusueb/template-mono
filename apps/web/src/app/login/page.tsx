@@ -1,5 +1,5 @@
 import { LoginContainer } from "@/containers/login";
 
 export default function Page() {
-  return <LoginContainer />;
+	return <LoginContainer />;
 }

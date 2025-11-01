@@ -1,5 +1,5 @@
 function useSignOut() {
-  return null;
+	return null;
 }
 
 export default useSignOut;
