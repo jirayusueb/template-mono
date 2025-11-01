@@ -10,9 +10,9 @@
 							[":BUN:", ":NODE:"],
 							[":PACKAGE:"],
 							":BLANK_LINE:",
-							["@/components/ui/*"],
+							["@/components*"],
 							":BLANK_LINE:",
-							["@/**"],
+							["@/*"],
 							":BLANK_LINE:",
 							["./**"]
 						]
