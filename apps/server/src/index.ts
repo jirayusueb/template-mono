@@ -1,6 +1,6 @@
-import "dotenv/config";
 import { Elysia } from "elysia";
 
+import { env } from "./env";
 import { routers } from "./routers";
 import { StatusCodes } from "./shared/const";
 import { loggerIntegration, openapiIntegration } from "./shared/integrations";
@@ -23,7 +23,7 @@ const app = new Elysia()
 		return { error: "Method not allowed" };
 	})
 	.use(routers)
-	.listen(Number.parseInt(process.env.PORT || "3001", 10));
+	.listen(env.PORT);
 
 export type Routers = typeof routers;
 export type App = typeof app;

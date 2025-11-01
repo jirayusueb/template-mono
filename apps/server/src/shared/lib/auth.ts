@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer } from "better-auth/plugins";
 
+import { env } from "../../env";
 import { db } from "../../db";
 import * as schema from "../../db/schema/auth";
 
@@ -10,7 +11,7 @@ const auth = betterAuth({
 		provider: "sqlite",
 		schema,
 	}),
-	trustedOrigins: [process.env.CORS_ORIGIN || ""],
+	trustedOrigins: [env.CORS_ORIGIN],
 	emailAndPassword: {
 		enabled: true,
 	},

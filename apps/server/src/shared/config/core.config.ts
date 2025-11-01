@@ -1,5 +1,7 @@
 import { Elysia } from "elysia";
 
+import { env } from "../../env";
+
 export interface CoreConfig {
 	port: number;
 	nodeEnv: string;
@@ -8,9 +10,9 @@ export interface CoreConfig {
 
 function loadCoreConfig(): CoreConfig {
 	return {
-		port: Number.parseInt(process.env.PORT || "3001", 10),
-		nodeEnv: process.env.NODE_ENV || "development",
-		databaseUrl: process.env.DATABASE_URL as string,
+		port: env.PORT,
+		nodeEnv: env.NODE_ENV,
+		databaseUrl: env.DATABASE_URL,
 	};
 }
 

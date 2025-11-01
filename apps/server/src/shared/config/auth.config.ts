@@ -1,5 +1,7 @@
 import { Elysia } from "elysia";
 
+import { env } from "../../env";
+
 export interface AuthConfig {
 	secret: string;
 	sessionTimeout: number;
@@ -7,8 +9,8 @@ export interface AuthConfig {
 
 function loadAuthConfig(): AuthConfig {
 	return {
-		secret: process.env.BETTER_AUTH_SECRET || "your-secret-key",
-		sessionTimeout: Number.parseInt(process.env.SESSION_TIMEOUT || "86400", 10), // 24 hours
+		secret: env.BETTER_AUTH_SECRET,
+		sessionTimeout: env.SESSION_TIMEOUT,
 	};
 }
 
