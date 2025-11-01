@@ -1,28 +1,28 @@
 {
-  "editor.defaultFormatter": "fronterior.biome-monorepo",
+  "editor.defaultFormatter": "biomejs.biome",
   "[javascript]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[javascriptreact]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[json]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[css]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[graphql]": {
-    "editor.defaultFormatter": "fronterior.biome-monorepo"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "emmet.showExpandedAbbreviation": "never",

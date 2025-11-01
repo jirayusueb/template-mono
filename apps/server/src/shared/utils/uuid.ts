@@ -9,7 +9,7 @@ const UUID_V7_HEX_BASE = 16;
 
 // Pre-compiled regex for UUID validation (moved to top level for performance)
 const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Generate a UUID v7 (time-ordered UUID)
@@ -20,7 +20,7 @@ const UUID_REGEX =
  * @returns A UUID v7 string
  */
 export function generateUuidV7(): string {
-  return uuidv7();
+	return uuidv7();
 }
 /**
  * Generate a UUID v4 (random UUID)
@@ -31,7 +31,7 @@ export function generateUuidV7(): string {
  * @returns A UUID v4 string
  */
 export function generateUuidV4(): string {
-  return uuidv4();
+	return uuidv4();
 }
 
 /**
@@ -42,17 +42,17 @@ export function generateUuidV4(): string {
  * @throws Error if version is not 4 or 7
  */
 export function generateUuid(version: 4 | 7 = 7): string {
-  if (!UUID_VALID_VERSIONS.includes(version)) {
-    throw new Error(
-      `Unsupported UUID version: ${version}. Only versions 4 and 7 are supported.`
-    );
-  }
+	if (!UUID_VALID_VERSIONS.includes(version)) {
+		throw new Error(
+			`Unsupported UUID version: ${version}. Only versions 4 and 7 are supported.`,
+		);
+	}
 
-  if (version === UUID_VERSION_4) {
-    return generateUuidV4();
-  }
+	if (version === UUID_VERSION_4) {
+		return generateUuidV4();
+	}
 
-  return generateUuidV7();
+	return generateUuidV7();
 }
 
 /**
@@ -62,7 +62,7 @@ export function generateUuid(version: 4 | 7 = 7): string {
  * @returns True if the string is a valid UUID, false otherwise
  */
 export function isValidUuid(uuid: string): boolean {
-  return UUID_REGEX.test(uuid);
+	return UUID_REGEX.test(uuid);
 }
 
 /**
@@ -72,21 +72,21 @@ export function isValidUuid(uuid: string): boolean {
  * @returns The timestamp in milliseconds since Unix epoch, or null if invalid
  */
 export function extractTimestampFromUuidV7(uuid: string): number | null {
-  if (!isValidUuid(uuid)) {
-    return null;
-  }
+	if (!isValidUuid(uuid)) {
+		return null;
+	}
 
-  try {
-    // UUID v7 has the timestamp in the first 48 bits
-    const hex = uuid.replace(/-/g, "");
-    const timestampHex = hex.substring(0, UUID_V7_TIMESTAMP_LENGTH);
-    const timestamp = Number.parseInt(timestampHex, UUID_V7_HEX_BASE);
+	try {
+		// UUID v7 has the timestamp in the first 48 bits
+		const hex = uuid.replace(/-/g, "");
+		const timestampHex = hex.substring(0, UUID_V7_TIMESTAMP_LENGTH);
+		const timestamp = Number.parseInt(timestampHex, UUID_V7_HEX_BASE);
 
-    // Convert from milliseconds to seconds and back to get the actual timestamp
-    return timestamp;
-  } catch {
-    return null;
-  }
+		// Convert from milliseconds to seconds and back to get the actual timestamp
+		return timestamp;
+	} catch {
+		return null;
+	}
 }
 
 /**

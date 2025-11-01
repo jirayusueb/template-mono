@@ -1,30 +1,29 @@
 import "dotenv/config";
 import { Elysia } from "elysia";
 
+import { routers } from "./routers";
 import { StatusCodes } from "./shared/const";
 import { loggerIntegration, openapiIntegration } from "./shared/integrations";
 import { errorInterceptor } from "./shared/interceptors";
 import { auth } from "./shared/lib";
 import { corsMiddleware } from "./shared/middleware";
 
-import { routers } from "./routers";
-
 const app = new Elysia()
-  .use(loggerIntegration)
-  .use(openapiIntegration)
-  .use(errorInterceptor)
-  .use(corsMiddleware)
-  .all("/api/auth/*", ({ request, set }) => {
-    if (["POST", "GET"].includes(request.method)) {
-      return auth.handler(request);
-    }
+	.use(loggerIntegration)
+	.use(openapiIntegration)
+	.use(errorInterceptor)
+	.use(corsMiddleware)
+	.all("/api/auth/*", ({ request, set }) => {
+		if (["POST", "GET"].includes(request.method)) {
+			return auth.handler(request);
+		}
 
-    set.status = StatusCodes.METHOD_NOT_ALLOWED;
+		set.status = StatusCodes.METHOD_NOT_ALLOWED;
 
-    return { error: "Method not allowed" };
-  })
-  .use(routers)
-  .listen(Number.parseInt(process.env.PORT || "3001", 10));
+		return { error: "Method not allowed" };
+	})
+	.use(routers)
+	.listen(Number.parseInt(process.env.PORT || "3001", 10));
 
 export type Routers = typeof routers;
 export type App = typeof app;
