@@ -1,10 +1,10 @@
 import { useForm } from "@tanstack/react-form";
 
+import { Loader } from "@/components";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import { Loader } from "@/components";
 import { useSignUpFormSchema } from "@/containers/login/hooks";
 import { useSignUp } from "@/features/auth/hooks";
 

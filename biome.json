@@ -59,7 +59,6 @@
 				"noBarrelFile": "off"
 			},
 			"nursery": {
-				"useConsistentTypeDefinitions": "off",
 				"noShadow": "off"
 			},
 			"suspicious": {

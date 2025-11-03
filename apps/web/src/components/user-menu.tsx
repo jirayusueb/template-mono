@@ -11,7 +11,6 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-
 import { authClient } from "@/lib/auth-client";
 
 export default function UserMenu() {
