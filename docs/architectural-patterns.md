@@ -52,7 +52,7 @@ TypeScript is used throughout with strict type checking and proper interfaces.
 
 ### Workspace Structure
 ```
-template-mono/
+sunny-mono/
 ├── apps/
 │   ├── web/          # Next.js frontend
 │   └── server/       # Elysia backend
