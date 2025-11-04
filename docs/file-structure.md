@@ -9,7 +9,7 @@ This is a Next.js monorepo with a clear separation between frontend (web) and ba
 ## Root Structure
 
 ```
-sunny-mono/
+template-mono/
 ├── apps/
 │   ├── web/          # Next.js frontend application
 │   └── server/       # Elysia backend application

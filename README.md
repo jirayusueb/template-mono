@@ -1,13 +1,13 @@
-# Sunny Mono
+# Next.js + Elysia Template
 
-A LINE bot for income and expense tracking, built as a modern full-stack TypeScript monorepo with [Better-T-Stack](https://better-t-stack.com/), featuring Next.js frontend and Elysia backend with comprehensive authentication, database management, and development tooling.
+A modern, full-stack TypeScript monorepo template built with [Better-T-Stack](https://better-t-stack.com/), featuring Next.js frontend and Elysia backend with comprehensive authentication, database management, and development tooling.
 
 ## 🚀 Quick Start
 
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd sunny-mono
+cd template-mono
 
 # Install dependencies
 bun install
@@ -22,10 +22,10 @@ bun dev:server   # Backend only (port 3000)
 
 ## 🏗️ Architecture
 
-This project follows a **monorepo architecture** with clean separation between frontend and backend:
+This template follows a **monorepo architecture** with clean separation between frontend and backend:
 
 ```
-sunny-mono/
+template-mono/
 ├── apps/
 │   ├── web/          # Next.js frontend
 │   └── server/       # Elysia backend
