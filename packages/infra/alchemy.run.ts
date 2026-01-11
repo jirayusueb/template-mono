@@ -12,14 +12,32 @@ const db = await D1Database("database", {
 	migrationsDir: "../../packages/db/src/migrations",
 });
 
+const viteServerUrl = alchemy.env.VITE_SERVER_URL;
+const corsOrigin = alchemy.env.CORS_ORIGIN;
+const betterAuthSecret = alchemy.secret.env.BETTER_AUTH_SECRET;
+const betterAuthUrl = alchemy.env.BETTER_AUTH_URL;
+
+if (!viteServerUrl) {
+	throw new Error("Missing VITE_SERVER_URL environment variable");
+}
+if (!corsOrigin) {
+	throw new Error("Missing CORS_ORIGIN environment variable");
+}
+if (!betterAuthSecret) {
+	throw new Error("Missing BETTER_AUTH_SECRET environment variable");
+}
+if (!betterAuthUrl) {
+	throw new Error("Missing BETTER_AUTH_URL environment variable");
+}
+
 export const web = await TanStackStart("web", {
 	cwd: "../../apps/web",
 	bindings: {
-		VITE_SERVER_URL: alchemy.env.VITE_SERVER_URL!,
+		VITE_SERVER_URL: viteServerUrl,
 		DB: db,
-		CORS_ORIGIN: alchemy.env.CORS_ORIGIN!,
-		BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET!,
-		BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL!,
+		CORS_ORIGIN: corsOrigin,
+		BETTER_AUTH_SECRET: betterAuthSecret,
+		BETTER_AUTH_URL: betterAuthUrl,
 	},
 });
 
@@ -29,9 +47,9 @@ export const server = await Worker("server", {
 	compatibility: "node",
 	bindings: {
 		DB: db,
-		CORS_ORIGIN: alchemy.env.CORS_ORIGIN!,
-		BETTER_AUTH_SECRET: alchemy.secret.env.BETTER_AUTH_SECRET!,
-		BETTER_AUTH_URL: alchemy.env.BETTER_AUTH_URL!,
+		CORS_ORIGIN: corsOrigin,
+		BETTER_AUTH_SECRET: betterAuthSecret,
+		BETTER_AUTH_URL: betterAuthUrl,
 	},
 	dev: {
 		port: 3000,

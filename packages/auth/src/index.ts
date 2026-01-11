@@ -1,4 +1,5 @@
 import { db } from "@repo/db";
+
 import * as schema from "@repo/db/schema/auth";
 import { env } from "@repo/env/server";
 import { betterAuth } from "better-auth";

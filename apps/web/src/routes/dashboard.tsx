@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { getUser } from "@/functions/get-user";
-import { orpc } from "@/utils/orpc";
+import { eden } from "@/utils/eden";
 
 export const Route = createFileRoute("/dashboard")({
 	component: RouteComponent,
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/dashboard")({
 		const session = await getUser();
 		return { session };
 	},
-	loader: async ({ context }) => {
+	loader: ({ context }) => {
 		if (!context.session) {
 			throw redirect({
 				to: "/login",
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/dashboard")({
 function RouteComponent() {
 	const { session } = Route.useRouteContext();
 
-	const privateData = useQuery(orpc.privateData.queryOptions());
+	const privateData = useQuery(eden.privateData.queryOptions());
 
 	return (
 		<div>

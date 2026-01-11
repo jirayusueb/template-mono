@@ -1,15 +1,14 @@
 import { Elysia } from "elysia";
-import { db } from "@repo/db";
-import * as schema from "@repo/db/schema";
-import { betterAuthMiddleware } from "./middleware";
 
-export const app = new Elysia({ name: "api" })
-	.use(betterAuthMiddleware)
-	.get("/healthCheck", () => "OK")
-	.guard(({ session }) => !!session?.user)
-	.get("/privateData", ({ session }) => ({
-		message: "This is private",
-		user: session?.user,
-	}));
+import { DrizzleTodoRepository } from "./todo/infrastructure/repositories/drizzle-todo.repository";
+import { createTodoRoutes } from "./todo/presentation/routes/todo.routes";
+
+const app = new Elysia({ name: "api" }).get("/healthCheck", () => "OK");
+
+const todoRepository = new DrizzleTodoRepository();
+const todoRoutes = createTodoRoutes(todoRepository);
+
+app.use(todoRoutes);
 
 export type App = typeof app;
+export default app;

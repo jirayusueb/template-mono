@@ -1,12 +1,14 @@
-import { treaty } from "@elysiajs/eden";
 import type { App } from "@repo/api";
+import type { UseMutationOptions } from "@tanstack/react-query";
+
+import { treaty } from "@elysiajs/eden";
 import { env } from "@repo/env/web";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryCache, QueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const queryClient = new QueryClient({
 	queryCache: new QueryCache({
-		onError: (error) => {
+		onError: (error: Error) => {
 			toast.error(`Error: ${error.message}`);
 		},
 	}),
@@ -30,11 +32,14 @@ const createQueryOptions = <T>(key: string[], queryFn: () => Promise<T>) => ({
 
 const createMutationOptions = <T, U>(
 	mutationFn: (data: U) => Promise<T>,
-	options?: any
+	options?: UseMutationOptions<T, Error, U>
 ) => ({
 	mutationFn,
 	...options,
 });
+
+// biome-ignore lint/suspicious/noExplicitAny: Type assertions needed for generated API types
+const typedClient = client as any;
 
 export const eden = {
 	healthCheck: {
@@ -44,32 +49,40 @@ export const eden = {
 	todo: {
 		getAll: {
 			queryOptions: () =>
-				createQueryOptions(["todo", "getAll"], () => client.todo.getAll.get()),
+				createQueryOptions(["todo", "getAll"], () =>
+					typedClient.todo.getAll.get()
+				),
 		},
 		create: {
-			mutationOptions: (options?: any) =>
+			mutationOptions: (
+				options?: UseMutationOptions<unknown, Error, unknown>
+			) =>
 				createMutationOptions(
-					(data: any) => client.todo.create.post(data),
+					(data: unknown) => typedClient.todo.create.post(data),
 					options
 				),
 		},
 		toggle: {
-			mutationOptions: (options?: any) =>
+			mutationOptions: (
+				options?: UseMutationOptions<unknown, Error, unknown>
+			) =>
 				createMutationOptions(
-					(data: any) => client.todo.toggle.put(data),
+					(data: unknown) => typedClient.todo.toggle.put(data),
 					options
 				),
 		},
 		delete: {
-			mutationOptions: (options?: any) =>
+			mutationOptions: (
+				options?: UseMutationOptions<unknown, Error, unknown>
+			) =>
 				createMutationOptions(
-					(data: any) => client.todo.delete.delete(data),
+					(data: unknown) => typedClient.todo.delete.delete(data),
 					options
 				),
 		},
 	},
 	privateData: {
 		queryOptions: () =>
-			createQueryOptions(["privateData"], () => client.privateData.get()),
+			createQueryOptions(["privateData"], () => typedClient.privateData.get()),
 	},
-};
+} as const;

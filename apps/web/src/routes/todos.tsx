@@ -13,18 +13,24 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { orpc } from "@/utils/orpc";
+import { eden } from "@/utils/eden";
 
 export const Route = createFileRoute("/todos")({
 	component: TodosRoute,
 });
 
+interface Todo {
+	id: number;
+	text: string;
+	completed: boolean;
+}
+
 function TodosRoute() {
 	const [newTodoText, setNewTodoText] = useState("");
 
-	const todos = useQuery(orpc.todo.getAll.queryOptions());
+	const todos = useQuery(eden.todo.getAll.queryOptions());
 	const createMutation = useMutation(
-		orpc.todo.create.mutationOptions({
+		eden.todo.create.mutationOptions({
 			onSuccess: () => {
 				todos.refetch();
 				setNewTodoText("");
@@ -32,14 +38,14 @@ function TodosRoute() {
 		})
 	);
 	const toggleMutation = useMutation(
-		orpc.todo.toggle.mutationOptions({
+		eden.todo.toggle.mutationOptions({
 			onSuccess: () => {
 				todos.refetch();
 			},
 		})
 	);
 	const deleteMutation = useMutation(
-		orpc.todo.delete.mutationOptions({
+		eden.todo.delete.mutationOptions({
 			onSuccess: () => {
 				todos.refetch();
 			},
@@ -95,41 +101,51 @@ function TodosRoute() {
 						<div className="flex justify-center py-4">
 							<Loader2 className="h-6 w-6 animate-spin" />
 						</div>
-					) : todos.data?.length === 0 ? (
-						<p className="py-4 text-center">No todos yet. Add one above!</p>
 					) : (
-						<ul className="space-y-2">
-							{todos.data?.map((todo) => (
-								<li
-									className="flex items-center justify-between rounded-md border p-2"
-									key={todo.id}
-								>
-									<div className="flex items-center space-x-2">
-										<Checkbox
-											checked={todo.completed}
-											id={`todo-${todo.id}`}
-											onCheckedChange={() =>
-												handleToggleTodo(todo.id, todo.completed)
-											}
-										/>
-										<label
-											className={`${todo.completed ? "line-through" : ""}`}
-											htmlFor={`todo-${todo.id}`}
+						(() => {
+							const todoList = todos.data as unknown as Todo[] | undefined;
+							if (!todoList || todoList.length === 0) {
+								return (
+									<p className="py-4 text-center">
+										No todos yet. Add one above!
+									</p>
+								);
+							}
+							return (
+								<ul className="space-y-2">
+									{todoList.map((todo) => (
+										<li
+											className="flex items-center justify-between rounded-md border p-2"
+											key={todo.id}
 										>
-											{todo.text}
-										</label>
-									</div>
-									<Button
-										aria-label="Delete todo"
-										onClick={() => handleDeleteTodo(todo.id)}
-										size="icon"
-										variant="ghost"
-									>
-										<Trash2 className="h-4 w-4" />
-									</Button>
-								</li>
-							))}
-						</ul>
+											<div className="flex items-center space-x-2">
+												<Checkbox
+													checked={todo.completed}
+													id={`todo-${todo.id}`}
+													onCheckedChange={() =>
+														handleToggleTodo(todo.id, todo.completed)
+													}
+												/>
+												<label
+													className={`${todo.completed ? "line-through" : ""}`}
+													htmlFor={`todo-${todo.id}`}
+												>
+													{todo.text}
+												</label>
+											</div>
+											<Button
+												aria-label="Delete todo"
+												onClick={() => handleDeleteTodo(todo.id)}
+												size="icon"
+												variant="ghost"
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										</li>
+									))}
+								</ul>
+							);
+						})()
 					)}
 				</CardContent>
 			</Card>

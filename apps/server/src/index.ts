@@ -1,8 +1,9 @@
-import { Elysia } from "elysia";
-import { cors } from "@elysiajs/cors";
+import api from "@repo/api";
 import { auth } from "@repo/auth";
+
+import { cors } from "@elysiajs/cors";
 import { env } from "@repo/env/server";
-import { todoRoutes } from "@repo/api/routers/todo";
+import { Elysia } from "elysia";
 
 const app = new Elysia()
 	.use(
@@ -15,7 +16,7 @@ const app = new Elysia()
 	)
 	.mount("/api/auth", auth.handler)
 	.get("/", () => "OK")
-	.use(todoRoutes);
+	.use(api);
 
 export default app;
 export type App = typeof app;
