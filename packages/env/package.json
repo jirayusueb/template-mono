@@ -1,5 +1,5 @@
 {
-  "name": "@template-mono/env",
+  "name": "@repo/env",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@template-mono/config": "workspace:*",
-    "@template-mono/infra": "workspace:*",
+    "@repo/config": "workspace:*",
+    "@repo/infra": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:"
   }

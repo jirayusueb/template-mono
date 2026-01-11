@@ -1,30 +1,62 @@
-import { db } from "@template-mono/db";
-import { todo } from "@template-mono/db/schema/todo";
-import { eq } from "drizzle-orm";
-import z from "zod";
+import { db } from "@repo/db";
+import { todo } from "@repo/db/schema/todo";
+import { Elysia } from "elysia";
+import { z } from "zod";
+import { authMiddleware } from "../auth.middleware";
 
-import { publicProcedure } from "../index";
-
-export const todoRouter = {
-  getAll: publicProcedure.handler(async () => {
-    return await db.select().from(todo);
-  }),
-
-  create: publicProcedure
-    .input(z.object({ text: z.string().min(1) }))
-    .handler(async ({ input }) => {
-      return await db.insert(todo).values({
-        text: input.text,
-      });
-    }),
-
-  toggle: publicProcedure
-    .input(z.object({ id: z.number(), completed: z.boolean() }))
-    .handler(async ({ input }) => {
-      return await db.update(todo).set({ completed: input.completed }).where(eq(todo.id, input.id));
-    }),
-
-  delete: publicProcedure.input(z.object({ id: z.number() })).handler(async ({ input }) => {
-    return await db.delete(todo).where(eq(todo.id, input.id));
-  }),
-};
+export const todoRoutes = new Elysia({ prefix: "/todo" })
+	.use(authMiddleware)
+	.get(
+		"/getAll",
+		async () => {
+			return await db.select().from(todo);
+		},
+		{
+			auth: true,
+		}
+	)
+	.post(
+		"/create",
+		async ({ body }) => {
+			const result = await db.insert(todo).values({
+				text: body.text,
+			});
+			return result;
+		},
+		{
+			auth: true,
+			body: z.object({
+				text: z.string().min(1),
+			}),
+		}
+	)
+	.put(
+		"/toggle",
+		async ({ body }) => {
+			const { sql } = await import("drizzle-orm/sql");
+			await db
+				.update(todo)
+				.set({ completed: body.completed })
+				.where(sql`${todo.id} = ${body.id}`);
+		},
+		{
+			auth: true,
+			body: z.object({
+				id: z.number(),
+				completed: z.boolean(),
+			}),
+		}
+	)
+	.delete(
+		"/delete",
+		async ({ body }) => {
+			const { sql } = await import("drizzle-orm/sql");
+			await db.delete(todo).where(sql`${todo.id} = ${body.id}`);
+		},
+		{
+			auth: true,
+			body: z.object({
+				id: z.number(),
+			}),
+		}
+	);

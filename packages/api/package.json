@@ -1,5 +1,5 @@
 {
-  "name": "@template-mono/api",
+  "name": "@repo/api",
   "type": "module",
   "exports": {
     ".": {
@@ -11,19 +11,16 @@
   },
   "scripts": {},
   "dependencies": {
-    "@orpc/client": "catalog:",
-    "@orpc/openapi": "catalog:",
-    "@orpc/server": "catalog:",
-    "@orpc/zod": "catalog:",
-    "@template-mono/auth": "workspace:*",
-    "@template-mono/db": "workspace:*",
-    "@template-mono/env": "workspace:*",
+    "@repo/auth": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/env": "workspace:*",
     "dotenv": "catalog:",
+    "elysia": "latest",
     "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@template-mono/config": "workspace:*",
+    "@repo/config": "workspace:*",
     "typescript": "catalog:"
   }
 }

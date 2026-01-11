@@ -1,5 +1,5 @@
 {
-  "name": "@template-mono/db",
+  "name": "@repo/db",
   "type": "module",
   "exports": {
     ".": {
@@ -15,14 +15,14 @@
   },
   "dependencies": {
     "@libsql/client": "catalog:",
-    "@template-mono/env": "workspace:*",
+    "@repo/env": "workspace:*",
     "dotenv": "catalog:",
     "drizzle-orm": "catalog:",
     "libsql": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@template-mono/config": "workspace:*",
+    "@repo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
     "typescript": "catalog:"
   }

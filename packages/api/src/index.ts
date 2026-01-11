@@ -1,20 +1,15 @@
-import { ORPCError, os } from "@orpc/server";
+import { Elysia } from "elysia";
+import { db } from "@repo/db";
+import * as schema from "@repo/db/schema";
+import { betterAuthMiddleware } from "./middleware";
 
-import type { Context } from "./context";
+export const app = new Elysia({ name: "api" })
+	.use(betterAuthMiddleware)
+	.get("/healthCheck", () => "OK")
+	.guard(({ session }) => !!session?.user)
+	.get("/privateData", ({ session }) => ({
+		message: "This is private",
+		user: session?.user,
+	}));
 
-export const o = os.$context<Context>();
-
-export const publicProcedure = o;
-
-const requireAuth = o.middleware(async ({ context, next }) => {
-  if (!context.session?.user) {
-    throw new ORPCError("UNAUTHORIZED");
-  }
-  return next({
-    context: {
-      session: context.session,
-    },
-  });
-});
-
-export const protectedProcedure = publicProcedure.use(requireAuth);
+export type App = typeof app;

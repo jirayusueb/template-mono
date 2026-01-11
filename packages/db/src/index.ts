@@ -1,4 +1,4 @@
-import { env } from "@template-mono/env/server";
+import { env } from "@repo/env/server";
 import { drizzle } from "drizzle-orm/d1";
 
 import * as schema from "./schema";
