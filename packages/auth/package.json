@@ -1,0 +1,24 @@
+{
+  "name": "@template-mono/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@template-mono/db": "workspace:*",
+    "@template-mono/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@template-mono/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

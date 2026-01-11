@@ -1,0 +1,29 @@
+{
+  "name": "@template-mono/api",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@orpc/client": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "@template-mono/auth": "workspace:*",
+    "@template-mono/db": "workspace:*",
+    "@template-mono/env": "workspace:*",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@template-mono/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
