@@ -1,7 +1,7 @@
 import type { TodoTable } from "@repo/db/schema/todo";
 import type { ITodoEntity } from "../../domain/entities/todo.interface";
 
-import { TodoText } from "../../domain/value-objects/todo-text";
+import { TodoText } from "../../domain/value-objects/todo-text.vo";
 
 export const toDomain = (data: TodoTable): ITodoEntity => {
 	const text = new TodoText(data.text);

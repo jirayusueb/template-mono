@@ -8,7 +8,7 @@ import { CreateTodoUseCase } from "../../application/use-cases/create-todo.use-c
 import { DeleteTodoUseCase } from "../../application/use-cases/delete-todo.use-case";
 import { GetAllTodosUseCase } from "../../application/use-cases/get-all-todos.use-case";
 import { ToggleTodoUseCase } from "../../application/use-cases/toggle-todo.use-case";
-import { TodoText } from "../../domain/value-objects/todo-text";
+import { TodoText } from "../../domain/value-objects/todo-text.vo";
 
 const createTodoRequestSchema = z.object({
 	text: z.string().min(1).max(500),

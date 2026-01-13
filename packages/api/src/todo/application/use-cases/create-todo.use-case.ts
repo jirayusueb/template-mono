@@ -1,5 +1,5 @@
 import type { ITodoRepository } from "../../domain/repositories/todo.repository";
-import type { TodoText } from "../../domain/value-objects/todo-text";
+import type { TodoText } from "../../domain/value-objects/todo-text.vo";
 import type { TodoResponse } from "../dto/todo.dto";
 
 import { Result } from "better-result";

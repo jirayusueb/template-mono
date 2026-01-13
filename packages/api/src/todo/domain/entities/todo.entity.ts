@@ -1,4 +1,4 @@
-import type { TodoText } from "../value-objects/todo-text";
+import type { TodoText } from "../value-objects/todo-text.vo";
 
 export class Todo {
 	readonly id: number;
